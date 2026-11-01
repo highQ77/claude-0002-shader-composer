@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shader Composer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div id="app">
+    <header class="toolbar">
+      <div class="brand"><span class="logo"></span>Shader Composer</div>
+      <div class="dropdown" id="example-dd">
+        <button class="btn dd-trigger" aria-haspopup="listbox" aria-expanded="false" title="載入範例">範例 <span class="dd-caret">▾</span></button>
+        <ul class="dd-list" role="listbox" aria-label="範例" hidden></ul>
+      </div>
+      <span class="sep"></span>
+      <button class="btn" id="btn-undo" title="復原 (⌘/Ctrl+Z)">↶ 復原</button>
+      <button class="btn" id="btn-redo" title="重做 (⌘/Ctrl+Shift+Z)">↷ 重做</button>
+      <button class="btn" id="btn-frame" title="全部置中 (F)">⤢ 置中</button>
+      <span class="sep"></span>
+      <button class="btn" id="btn-import">匯入 JSON</button>
+      <button class="btn" id="btn-export">匯出 JSON</button>
+      <input type="file" id="file-input" accept=".json,application/json" hidden>
+      <input type="file" id="image-input" accept="image/*" hidden>
+      <span class="spacer"></span>
+      <span style="font-size: 12px; color: gray;">Claude x William77</span>
+      <button class="btn danger" id="btn-clear">清空</button>
+      <button class="btn" id="btn-bundle" title="打包 GLSL、節點圖、預覽圖與獨立播放頁為 ZIP">⇩ 輸出</button>
+    </header>
+
+    <main>
+      <!-- 左：節點庫 + 預覽 -->
+      <aside class="left">
+        <div class="panel-title">節點庫</div>
+        <input id="palette-search" class="search" placeholder="搜尋節點…" autocomplete="off">
+        <div id="palette"></div>
+
+        <div class="preview-panel" id="preview-panel">
+          <div class="preview-bar">
+            <div class="dropdown" id="mesh-dd">
+              <button class="btn small dd-trigger" aria-haspopup="listbox" aria-expanded="false" title="預覽網格"><span class="dd-label">球體</span> <span class="dd-caret">▾</span></button>
+              <ul class="dd-list" role="listbox" aria-label="預覽網格" hidden></ul>
+            </div>
+            <button class="btn small" id="btn-rotate" title="自動旋轉">⟳</button>
+            <button class="btn small" id="btn-pause" title="暫停 / 播放時間">⏸</button>
+            <span id="time-label" class="muted mono"></span>
+            <span class="spacer"></span>
+            <button class="btn small" id="btn-shot" title="下載 PNG">⤓</button>
+            <button class="btn small" id="btn-full" title="全螢幕">⛶</button>
+          </div>
+          <div class="preview-wrap" id="preview-wrap">
+            <canvas id="preview"></canvas>
+            <div id="error"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 中：節點圖 -->
+      <section id="graph">
+        <div id="layer">
+          <svg id="wires">
+            <g id="links"></g>
+            <path id="temp-wire" style="display:none"></path>
+          </svg>
+          <div id="nodes"></div>
+        </div>
+        <div class="hint">右鍵 / 空白鍵：新增節點 · 拖曳背景：平移 · 滾輪：縮放 · 拖曳連線到空白處：建立並連接 · 拖入圖檔：建立貼圖 · 雙擊連線：刪除 · Del：刪除節點 ·
+          ⌘/Ctrl+D：複製</div>
+        <div class="zoom-label mono" id="zoom-label"></div>
+      </section>
+
+      <!-- 右：屬性 / GLSL -->
+      <aside class="right">
+        <div class="tabs">
+          <button class="tab active" data-tab="props">屬性</button>
+          <button class="tab" data-tab="code">GLSL</button>
+        </div>
+        <div class="tab-body" id="tab-props"></div>
+        <div class="tab-body" id="tab-code" hidden>
+          <div class="code-head"><span class="muted">Vertex + Fragment（GLSL ES 3.0）</span><button class="btn small"
+              id="btn-copy">複製</button></div>
+          <pre id="code"></pre>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="menu" hidden>
+    <input id="menu-input" placeholder="搜尋節點…" autocomplete="off">
+    <ul id="menu-list"></ul>
+  </div>
+  <div id="toast"></div>
+
+  <script src="js/nodes.js"></script>
+  <script src="js/compiler.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/examples.js"></script>
+  <script src="js/zip.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
